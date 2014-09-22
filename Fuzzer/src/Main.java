@@ -3,7 +3,6 @@ import java.util.Scanner;
 
 /**
  * @author John
- *
  */
 public class Main {
 
@@ -11,7 +10,7 @@ public class Main {
 	 * @param args [discover | test] url OPTIONS
 	 */
 	public static void main(String[] args) {
-		// Stop HTMLUnit for outputting warnings.
+		// Stop HTMLUnit from outputting warnings.
 		java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
 
 		if(args.length < 2) {
@@ -24,11 +23,9 @@ public class Main {
 				
 				// URL
 				url = args[1];
-				System.out.println(url);
 				
 				// OPTIONS
 				for(int i=2; i<args.length; i++){
-					System.out.println(args[i]);
 					if(args[i].contains("--custom-auth")) {
 						custom_auth = args[i].split("=", 2)[1];
 					} else if(args[i].contains("--common-words")) {

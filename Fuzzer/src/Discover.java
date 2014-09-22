@@ -9,9 +9,7 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 
 
@@ -35,6 +33,12 @@ public class Discover {
 		}
 		webClient = new WebClient(BrowserVersion.CHROME);
 		webClient.waitForBackgroundJavaScript(50000);
+		
+		// Logs in if custom_auth is non-null and known.
+		HtmlPage mainPage = Login.login(custom_auth, webClient);
+		if(mainPage != null) {
+			address = mainPage.getUrl();
+		}
 	}
 	
 	public void search(String inaddress){
@@ -46,8 +50,6 @@ public class Discover {
 		}
 		System.out.println("finished");
 		
-		
-		
 	}
 	public void searchSub(String inaddress){
 		try {
@@ -56,7 +58,9 @@ public class Discover {
 			HtmlPage page = webClient.getPage(inaddress);
 			List<HtmlForm> forms = page.getForms();
 			for (HtmlForm form : forms) {
-				System.out.println("     Input discovered: " + form.getId() );
+				String id = form.getId();
+				if("".equals(id)) id = "(no ID for form) " + form.getCanonicalXPath();
+				System.out.println("     Input discovered: " + id );
 			}
 			List<HtmlAnchor> links = page.getAnchors();
 			String url;
@@ -68,6 +72,9 @@ public class Discover {
 				url = page.getFullyQualifiedUrl(link.getHrefAttribute()).toString();
 				
 				// Have we already visited this url?
+				if(url.contains("dvwa")){
+					System.out.println("breakpoint");
+				}
 				if(av.contains(url)) continue;
 				
 				// New internal URL!
@@ -84,8 +91,10 @@ public class Discover {
 			System.out.println("done");
 			return;
 			
-		}catch(FailingHttpStatusCodeException e404){
+		} catch(FailingHttpStatusCodeException e404){
 			System.out.println("404 at URL="+inaddress);
+		} catch(org.apache.http.conn.HttpHostConnectException e) {
+			System.out.println(e.getLocalizedMessage());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
