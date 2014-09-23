@@ -68,13 +68,17 @@ public class Discover {
 		av.add(inaddress);
 		visit.add(inaddress);
 		while(visit.size() > 0) {
-			searchSub(visit.get(0),0);
+			searchSub(visit.get(0),false);
 			visit.remove(0);
 		}
 		try {
+			System.out.println();
+			System.out.println("Beginning to guess valid URLs");
 			//scanner of common words
 			Scanner sc = new Scanner(new File(common_words));
+			boolean foundGuess = false;
 			
+			String url;
 			while(sc.hasNext()){
 				//scanner for endings
 				Scanner en = new Scanner(new File("endings.txt"));
@@ -83,9 +87,13 @@ public class Discover {
 				while(en.hasNext()){
 					// build url
 					if(inaddress.lastIndexOf("/")==inaddress.length()-1){
-						visit.add(inaddress+scn+"."+en.nextLine());
-					}else{
-						visit.add(inaddress+"/"+scn+"."+en.nextLine());
+						url = inaddress+scn+"."+en.nextLine();
+					} else {
+						url = inaddress+"/"+scn+"."+en.nextLine();
+					}
+					if(!av.contains(url)) {
+						av.add(url);
+						visit.add(url);
 					}
 				}
 				en.close();
@@ -96,9 +104,11 @@ public class Discover {
 			e1.printStackTrace();
 		}
 		while(visit.size() > 0) {
-			searchSub(visit.get(0),1);
+			searchSub(visit.get(0),true);
 			visit.remove(0);
 		}
+		System.out.println("End of guesses.");
+		
 		if(queryInputs.keySet().size() != 0) {
 			// Print out collected query inputs
 			System.out.println();
@@ -114,12 +124,14 @@ public class Discover {
 		System.out.println("finished");
 		
 	}
-	public void searchSub(String inaddress, int guess){
+	public void searchSub(String inaddress, boolean guess){
 		try {
-			System.out.println("\nIn search: "+inaddress);
+			if(!guess) System.out.println("\nIn search: "+inaddress);
 			
 			// Load the requested page
 			HtmlPage page = webClient.getPage(inaddress);
+			
+			if(guess) System.out.println("\nGuessed a valid URL!\nIn search: "+inaddress);
 			
 			// Forms discovery
 			List<HtmlForm> forms = page.getForms();
@@ -181,10 +193,8 @@ public class Discover {
 			
 		} catch(FailingHttpStatusCodeException e404){
 			//if guess don't print 404 error
-			if(guess==0){
+			if(!guess){
 				System.out.println("404 at URL="+inaddress);
-			}else{
-				
 			}
 		} catch(org.apache.http.conn.HttpHostConnectException e) {
 			System.out.println(e.getLocalizedMessage());
