@@ -2,7 +2,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
@@ -37,11 +40,24 @@ public class Discover {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
+		
+		
+		
 		webClient = new WebClient(BrowserVersion.CHROME);
 		webClient.waitForBackgroundJavaScript(50000);
 		
 		// Logs in if custom_auth is non-null and known.
-		HtmlPage mainPage = Login.login(custom_auth, webClient);
+		HtmlPage mainPage=null;
+		try{
+			//System.out.println("Custom auth: "+custom_auth+"\n common_words: "+ common_words);
+			mainPage = Login.login(custom_auth, webClient);
+		}catch(NullPointerException e){
+			try{
+			mainPage=webClient.getPage(url);
+			} catch(Exception e2){
+				System.exit(0);
+			}
+		}
 		if(mainPage != null) {
 			address = mainPage.getUrl();
 		}
@@ -54,7 +70,30 @@ public class Discover {
 			searchSub(visit.get(0));
 			visit.remove(0);
 		}
-		
+		try {
+			//scanner of common words
+			Scanner sc = new Scanner(new File(common_words));
+			
+			while(sc.hasNext()){
+				//scanner for endings
+				Scanner en = new Scanner(new File("endings.txt"));
+				//common words next
+				String scn=sc.nextLine();
+				while(en.hasNext()){
+					// build url
+					if(inaddress.lastIndexOf("/")==inaddress.length()-1){
+						visit.add(inaddress+scn+"."+en.nextLine());
+					}else{
+						visit.add(inaddress+"/"+scn+"."+en.nextLine());
+					}
+				}
+				en.close();
+			}
+			sc.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		if(queryInputs.keySet().size() != 0) {
 			// Print out collected query inputs
 			System.out.println();
@@ -66,6 +105,7 @@ public class Discover {
 				}
 			}
 		}
+		
 		System.out.println("finished");
 		
 	}

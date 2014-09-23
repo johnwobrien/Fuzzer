@@ -4,6 +4,9 @@ import java.util.Scanner;
 /**
  * @author John
  */
+//discover http://www.reddit.com
+//discover http://127.0.0.1/ --custom-auth=dvwa --common-words=mywords.txt
+//discover http://127.0.0.1/ --custom-auth=BodgeIt --common-words=mywords.txt
 public class Main {
 
 	/**
