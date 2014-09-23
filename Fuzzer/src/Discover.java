@@ -17,6 +17,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.util.Cookie;
 
 
 
@@ -67,7 +68,7 @@ public class Discover {
 		av.add(inaddress);
 		visit.add(inaddress);
 		while(visit.size() > 0) {
-			searchSub(visit.get(0));
+			searchSub(visit.get(0),0);
 			visit.remove(0);
 		}
 		try {
@@ -94,6 +95,10 @@ public class Discover {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		while(visit.size() > 0) {
+			searchSub(visit.get(0),1);
+			visit.remove(0);
+		}
 		if(queryInputs.keySet().size() != 0) {
 			// Print out collected query inputs
 			System.out.println();
@@ -109,7 +114,7 @@ public class Discover {
 		System.out.println("finished");
 		
 	}
-	public void searchSub(String inaddress){
+	public void searchSub(String inaddress, int guess){
 		try {
 			System.out.println("\nIn search: "+inaddress);
 			
@@ -167,12 +172,20 @@ public class Discover {
 				}
 				
 			}
+			for(Cookie cook: webClient.getCookieManager().getCookies() ){
+				System.out.println("Cookie="+cook.toString());
+			}
 			
 			System.out.println("done");
 			return;
 			
 		} catch(FailingHttpStatusCodeException e404){
-			System.out.println("404 at URL="+inaddress);
+			//if guess don't print 404 error
+			if(guess==0){
+				System.out.println("404 at URL="+inaddress);
+			}else{
+				
+			}
 		} catch(org.apache.http.conn.HttpHostConnectException e) {
 			System.out.println(e.getLocalizedMessage());
 		} catch (MalformedURLException e) {
