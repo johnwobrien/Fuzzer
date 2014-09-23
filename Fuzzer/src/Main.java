@@ -17,7 +17,7 @@ public class Main {
 		java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
 
 		if(args.length < 2) {
-			System.out.println("USAGE: java Main [discover | test] url OPTIONS");
+			System.out.println("USAGE: java -jar Fuzzer.jar discover url OPTIONS");
 		} else {
 			if(args[0].equals("discover")){
 				String url, custom_auth, common_words;
