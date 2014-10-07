@@ -1,2 +1,12 @@
-php
+json
 jsp
+jp
+html
+htm
+php
+p
+c
+java
+py
+prl
+
