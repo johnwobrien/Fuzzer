@@ -36,10 +36,15 @@ public class Discover {
 	// List of query inputs discovered
 	private HashMap<String, Set<String>> queryInputs = new HashMap<String, Set<String>>();
 	private boolean test = false;
-	private test testRunner = new test();
+	private Test testRunner;
+	private boolean rand =false;
+	private int slow=500;
 	
-	public Discover(String url, String custom_auth, String common_words, boolean t){
+	public Discover(String url, String custom_auth, String common_words, boolean t, Test run, boolean rand, int slow ){
+		testRunner = run;
 		test=t;
+		this.rand = rand;
+		this.slow=slow;
 		this.custom_auth = custom_auth;
 		this.common_words = common_words;
 		try {
@@ -110,8 +115,12 @@ public class Discover {
 			e1.printStackTrace();
 		}
 		while(visit.size() > 0) {
-			searchSub(visit.get(0),true);
-			visit.remove(0);
+			int a=0;
+			if(rand){
+				 a=(int)(visit.size()*Math.random());
+			}
+			searchSub(visit.get(a),true);
+			visit.remove(a);
 		}
 		System.out.println("End of guesses.");
 		
@@ -121,8 +130,14 @@ public class Discover {
 			System.out.println("Gathered URL Query Inputs:");
 			for(String key : queryInputs.keySet()) {
 				System.out.println("     For URL: " + key);
+				HashSet<String> hs = new HashSet<String>();
+				
 				for(String q : queryInputs.get(key)) {
 					System.out.println("       Param: " + q);
+					hs.add(q.split("=")[0]);
+				}
+				for(String q: hs){
+					testRunner.paramAttack(key, webClient, q);
 				}
 			}
 		}
@@ -146,13 +161,24 @@ public class Discover {
 				if("".equals(id)) id = "(no ID for form) " + form.getCanonicalXPath();
 				System.out.println("     Form discovered: " + id );
 				List<HtmlElement> inputs = form.getHtmlElementsByTagName("input");
+				HtmlSubmitInput sub = null;
+				for(HtmlElement elm : inputs){
+					try{
+						if(elm instanceof HtmlSubmitInput){
+							sub=(HtmlSubmitInput)elm;
+							break;
+						}
+					}catch(Exception e){
+						
+					}
+				}
 				for(HtmlElement input : inputs){
 					id = input.getAttribute("name");
 					if("".equals(id)) continue;	// input must have name to be an input
-					System.out.println("       Input discovered: " + id );
-					if(test){
+					if(!test) System.out.println("       Input discovered: " + id );
+					if(test&&input instanceof HtmlTextInput&&sub!=null){
 						
-						testRunner.inputAttack(input, inputs);
+						testRunner.inputAttack((HtmlTextInput)input, sub);
 					}
 				}
 			}
@@ -185,7 +211,7 @@ public class Discover {
 				if(av.contains(url)) continue;
 				
 				// New internal URL!
-				System.out.println("     Link discovered: " + link.asText() + " @URL=" + url);
+				if(!test) System.out.println("     Link discovered: " + link.asText() + " @URL=" + url);
 				av.add(url);
 				
 				// Can we follow this url?  TODO: Blacklist should be expanded
@@ -195,7 +221,7 @@ public class Discover {
 				
 			}
 			for(Cookie cook: webClient.getCookieManager().getCookies() ){
-				System.out.println("Cookie="+cook.toString());
+				if(!test) System.out.println("Cookie="+cook.toString());
 			}
 			
 			System.out.println("done");
