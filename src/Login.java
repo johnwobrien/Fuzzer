@@ -3,8 +3,10 @@ import java.io.IOException;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlOption;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
+import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
@@ -38,11 +40,11 @@ public class Login {
 			
 		    // Get the form that we are dealing with and within that form, 
 		    // find the submit button and the field that we want to change.
-		    final HtmlForm form = (HtmlForm) page.getByXPath("/html/body/div/form").get(0);
+		    HtmlForm form = (HtmlForm) page.getByXPath("/html/body/div/form").get(0);
 
-		    final HtmlSubmitInput button = form.getInputByName("Login");
-		    final HtmlTextInput username = form.getInputByName("username");
-		    final HtmlPasswordInput password = form.getInputByName("password");
+		    HtmlSubmitInput button = form.getInputByName("Login");
+		    HtmlTextInput username = form.getInputByName("username");
+		    HtmlPasswordInput password = form.getInputByName("password");
 
 		    // Change the value of the text fields
 		    username.setValueAttribute("admin");
@@ -50,6 +52,18 @@ public class Login {
 
 		    // Now submit the form by clicking the button and get back the second page.
 		    returnPage = button.click();
+		    
+		    
+		    // DVWA specific - set security to low.
+		    page = client.getPage("http://127.0.0.1/dvwa/security.php");
+		    form = (HtmlForm) page.getByXPath("//*[@id=\"main_body\"]/div/form").get(0);
+		    
+		    button = form.getInputByName("seclev_submit");
+		    HtmlSelect select = (HtmlSelect) form.getSelectByName("security");
+		    HtmlOption option = select.getOptionByValue("low");
+		    select.setSelectedAttribute(option, true);
+		    returnPage = button.click();
+		    
 		} catch (FailingHttpStatusCodeException | IOException e) {
 			e.printStackTrace();
 		}
