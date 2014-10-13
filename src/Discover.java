@@ -84,7 +84,7 @@ public class Discover {
 		}
 		try {
 			System.out.println();
-			System.out.println("Beginning to guess valid URLs");
+			if(!test) System.out.println("Beginning to guess valid URLs");
 			//scanner of common words
 			Scanner sc = new Scanner(new File(common_words));
 			boolean foundGuess = false;
@@ -122,7 +122,7 @@ public class Discover {
 			searchSub(visit.get(a),true);
 			visit.remove(a);
 		}
-		System.out.println("End of guesses.");
+		if(!test) System.out.println("End of guesses.");
 		
 		if(queryInputs.keySet().size() != 0) {
 			// Print out collected query inputs
@@ -149,19 +149,19 @@ public class Discover {
 	}
 	public void searchSub(String inaddress, boolean guess){
 		try {
-			if(!guess) System.out.println("\nIn search: "+inaddress);
+			if(!test && !guess) System.out.println("\nIn search: "+inaddress);
 			
 			// Load the requested page
 			HtmlPage page = webClient.getPage(inaddress);
 			
-			if(guess) System.out.println("\nGuessed a valid URL!\nIn search: "+inaddress);
+			if(!test && guess) System.out.println("\nGuessed a valid URL!\nIn search: "+inaddress);
 			
 			// Forms discovery
 			List<HtmlForm> forms = page.getForms();
 			for (HtmlForm form : forms) {
 				String id = form.getId();
 				if("".equals(id)) id = "(no ID for form) " + form.getCanonicalXPath();
-				System.out.println("     Form discovered: " + id );
+				if(!test) System.out.println("     Form discovered: " + id );
 				List<HtmlElement> inputs = form.getHtmlElementsByTagName("input");
 				HtmlSubmitInput sub = null;
 				for(HtmlElement elm : inputs){
@@ -226,7 +226,7 @@ public class Discover {
 				if(!test) System.out.println("Cookie="+cook.toString());
 			}
 			
-			System.out.println("done");
+			if(!test) System.out.println("done");
 			return;
 			
 		} catch(FailingHttpStatusCodeException e404){

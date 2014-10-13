@@ -57,7 +57,6 @@ public class Test {
 				
 
 				for(String v: vect){
-					System.out.println("Search String: "+v);
 					((HtmlTextInput)input).setValueAttribute(v);
 					try{
 					HtmlPage ret =sub.click();
@@ -92,9 +91,15 @@ public class Test {
 		
 		
 		private void verifyOutput(HtmlPage ret, String v){
+			boolean flag=false;
 			for(String a : conts){
+				
 				//checks if the response contains important data about the system
 				if(ret.getWebResponse().getContentAsString().contains(a)){
+					if(!flag){
+						System.out.println("                                  At URl: "+ret.getUrl());
+						flag=true;
+					}
 					System.out.println("                                  Sensative data leaked: "+a);
 				}
 				
@@ -105,14 +110,26 @@ public class Test {
 					(v.contains("<")||v.contains(">")||v.contains("/")||
 					v.contains("\\")||v.contains("*")||v.contains("'")||
 					v.contains("\"")||v.contains("-")||v.contains("%"))){
+				if(!flag){
+					System.out.println("                                  At URl: "+ret.getUrl());
+					flag=true;
+				}
 				System.out.println("                                  Lack of Sanitization: "+v);
 			}
 			//Default 500 milliseconds
 			if(ret.getWebResponse().getLoadTime()>slow){
+				if(!flag){
+					System.out.println("                                  At URl: "+ret.getUrl());
+					flag=true;
+				}
 				System.out.println("                                  Delayed response of "+ret.getWebResponse().getLoadTime());
 			}
 			//200 is everything normal
 			if(ret.getWebResponse().getStatusCode()!=200){
+				if(!flag){
+					System.out.println("                                  At URl: "+ret.getUrl());
+					flag=true;
+				}
 				System.out.println("                                  Status Code of "+ret.getWebResponse().getStatusCode());
 				System.out.println("                                                 "+ret.getWebResponse().getStatusMessage());
 			}
