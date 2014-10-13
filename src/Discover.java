@@ -40,10 +40,10 @@ public class Discover {
 	private boolean rand =false;
 	private int slow=500;
 	
-	public Discover(String url, String custom_auth, String common_words, boolean t, Test run, boolean rand, int slow ){
+	public Discover(String url, String custom_auth, String common_words, boolean t, Test run, boolean rnd, int slow ){
 		testRunner = run;
 		test=t;
-		this.rand = rand;
+		this.rand = rnd;
 		this.slow=slow;
 		this.custom_auth = custom_auth;
 		this.common_words = common_words;
@@ -79,8 +79,12 @@ public class Discover {
 		av.add(inaddress);
 		visit.add(inaddress);
 		while(visit.size() > 0) {
-			searchSub(visit.get(0),false);
-			visit.remove(0);
+			int a=0;
+			if(rand){
+				 a=(int)(visit.size()*Math.random());
+			}
+			searchSub(visit.get(a),true);
+			visit.remove(a);
 		}
 		try {
 			System.out.println();
