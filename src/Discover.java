@@ -85,6 +85,7 @@ public class Discover {
 			}
 			searchSub(visit.get(a),true);
 			visit.remove(a);
+			if(rand) break;
 		}
 		try {
 			System.out.println();
@@ -125,6 +126,7 @@ public class Discover {
 			}
 			searchSub(visit.get(a),true);
 			visit.remove(a);
+			if(rand) break;
 		}
 		if(!test) System.out.println("End of guesses.");
 		
@@ -163,6 +165,7 @@ public class Discover {
 			// Forms discovery
 			List<HtmlForm> forms = page.getForms();
 			for (HtmlForm form : forms) {
+				if(rand) form = forms.get((int) (Math.random()*forms.size()));
 				String id = form.getId();
 				if("".equals(id)) id = "(no ID for form) " + form.getCanonicalXPath();
 				if(!test) System.out.println("     Form discovered: " + id );
@@ -187,6 +190,7 @@ public class Discover {
 						testRunner.inputAttack((HtmlTextInput)input, sub);
 					}
 				}
+				if(rand) break;
 			}
 			
 			// Links discovery
