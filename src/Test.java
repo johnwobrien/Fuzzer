@@ -101,7 +101,7 @@ public class Test {
 						flag=true;
 					}
 					System.out.println("	Sensative data leaked: "+a);
-					System.out.println("	      To input string: "+v);
+					System.out.println("	   Using input string: "+v);
 				}
 				
 				

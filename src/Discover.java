@@ -127,13 +127,13 @@ public class Discover {
 		if(queryInputs.keySet().size() != 0) {
 			// Print out collected query inputs
 			System.out.println();
-			System.out.println("Gathered URL Query Inputs:");
+			if(!test)System.out.println("Gathered URL Query Inputs:");
 			for(String key : queryInputs.keySet()) {
-				System.out.println("     For URL: " + key);
+				if(!test)System.out.println("     For URL: " + key);
 				HashSet<String> hs = new HashSet<String>();
 				
 				for(String q : queryInputs.get(key)) {
-					System.out.println("       Param: " + q);
+					if(!test)System.out.println("       Param: " + q);
 					hs.add(q.split("=")[0]);
 				}
 				if(test){
