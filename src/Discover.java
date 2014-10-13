@@ -31,6 +31,7 @@ public class Discover {
 	private WebClient webClient;
 	// List of links already visited
 	private ArrayList<String> av = new ArrayList<String>();
+	private ArrayList<String> avE = new ArrayList<String>();
 	// List of links that need to be visited
 	private ArrayList<String> visit = new ArrayList<String>();
 	// List of query inputs discovered
@@ -38,6 +39,7 @@ public class Discover {
 	private boolean test = false;
 	private Test testRunner;
 	private boolean rand =false;
+	private boolean rand2 =false;
 	private int slow=500;
 	
 	public Discover(String url, String custom_auth, String common_words, boolean t, Test run, boolean rnd, int slow ){
@@ -77,12 +79,13 @@ public class Discover {
 	
 	public void search(String inaddress){
 		av.add(inaddress);
+		avE.add(inaddress);
 		visit.add(inaddress);
 		while(visit.size() > 0) {
 			int a=0;
-			if(rand){
+			/*if(rand){
 				 a=(int)(visit.size()*Math.random());
-			}
+			}*/
 			searchSub(visit.get(a),true);
 			visit.remove(a);
 		}
@@ -108,6 +111,7 @@ public class Discover {
 					}
 					if(!av.contains(url)) {
 						av.add(url);
+						avE.add(url);
 						visit.add(url);
 					}
 				}
@@ -120,9 +124,9 @@ public class Discover {
 		}
 		while(visit.size() > 0) {
 			int a=0;
-			if(rand){
+			/*if(rand){
 				 a=(int)(visit.size()*Math.random());
-			}
+			}*/
 			searchSub(visit.get(a),true);
 			visit.remove(a);
 		}
@@ -140,14 +144,20 @@ public class Discover {
 					if(!test)System.out.println("       Param: " + q);
 					hs.add(q.split("=")[0]);
 				}
-				if(test){
+				if(test && !rand){
 					for(String q: hs){
 						testRunner.paramAttack(key, webClient, q);
 					}
 				}
 			}
 		}
-		
+		if(rand){
+			int a = (int) (Math.random()*avE.size());
+			rand=false;
+			rand2=true;
+			//System.out.println(a+"    "+avE.get(a)+"   "+avE.size());
+			searchSub(avE.get(a), false);
+		}
 		System.out.println("finished");
 		
 	}
@@ -163,7 +173,10 @@ public class Discover {
 			// Forms discovery
 			List<HtmlForm> forms = page.getForms();
 			for (HtmlForm form : forms) {
-				if(rand) form = forms.get((int) (Math.random()*forms.size()));
+				if(rand2){
+					form = forms.get((int) (Math.random()*forms.size()));
+				}
+				//if(rand) form = forms.get((int) (Math.random()*forms.size()));
 				String id = form.getId();
 				if("".equals(id)) id = "(no ID for form) " + form.getCanonicalXPath();
 				if(!test) System.out.println("     Form discovered: " + id );
@@ -183,14 +196,14 @@ public class Discover {
 					id = input.getAttribute("name");
 					if("".equals(id)) continue;	// input must have name to be an input
 					if(!test) System.out.println("       Input discovered: " + id );
-					if(test&&input instanceof HtmlTextInput&&sub!=null){
+					if(test&&input instanceof HtmlTextInput&&sub!=null&&!rand){
 						
 						testRunner.inputAttack((HtmlTextInput)input, sub);
 					}
 				}
-				if(rand) break;
+				if(rand2) break;
 			}
-			
+			if(rand2) return;
 			// Links discovery
 			List<HtmlAnchor> links = page.getAnchors();
 			String url;
@@ -221,7 +234,7 @@ public class Discover {
 				// New internal URL!
 				if(!test) System.out.println("     Link discovered: " + link.asText() + " @URL=" + url);
 				av.add(url);
-				
+				avE.add(url);
 				// Can we follow this url?  TODO: Blacklist should be expanded
 				if(!url.contains(".zip")){
 					visit.add(url);
@@ -237,6 +250,7 @@ public class Discover {
 			
 		} catch(FailingHttpStatusCodeException e404){
 			//if guess don't print 404 error
+			avE.remove(inaddress);
 			if(!guess){
 				System.out.println("404 at URL="+inaddress);
 			}
