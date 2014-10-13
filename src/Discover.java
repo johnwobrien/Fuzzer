@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -34,8 +35,11 @@ public class Discover {
 	private ArrayList<String> visit = new ArrayList<String>();
 	// List of query inputs discovered
 	private HashMap<String, Set<String>> queryInputs = new HashMap<String, Set<String>>();
+	private boolean test = false;
+	private test testRunner = new test();
 	
-	public Discover(String url, String custom_auth, String common_words){
+	public Discover(String url, String custom_auth, String common_words, boolean t){
+		test=t;
 		this.custom_auth = custom_auth;
 		this.common_words = common_words;
 		try {
@@ -146,20 +150,9 @@ public class Discover {
 					id = input.getAttribute("name");
 					if("".equals(id)) continue;	// input must have name to be an input
 					System.out.println("       Input discovered: " + id );
-					Class cls = input.getClass();  
-				    System.out.println("The type of the object is: " + cls.getName());  
-					if(input instanceof HtmlTextInput){
-						System.out.println(">>>>>>>>>>>><<<<<<<<<<<<");
-						Scanner sc = new Scanner(new File("sqlInj.txt"));
-						while(sc.hasNextLine()){
-							String scn=sc.nextLine();
-							input.setTextContent(scn);
-							for(HtmlElement elm : inputs){
-								if(elm instanceof HtmlSubmitInput){
-									elm.click();
-								}
-							}
-						}
+					if(test){
+						
+						testRunner.inputAttack(input, inputs);
 					}
 				}
 			}

@@ -14,12 +14,16 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		// Stop HTMLUnit from outputting warnings.
+		boolean t= false;
 		java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
 
 		if(args.length < 2) {
 			System.out.println("USAGE: java -jar Fuzzer.jar discover url OPTIONS");
 		} else {
-			if(args[0].equals("discover")){
+			if(args[0].equals("discover")||args[0].equals("test")){
+				if(args[0].equals("test")){
+					t=true;
+				}
 				String url, custom_auth, common_words;
 				custom_auth = null;
 				common_words = null;
@@ -36,7 +40,7 @@ public class Main {
 					}
 				}
 				
-				Discover runner = new Discover(url, custom_auth, common_words);
+				Discover runner = new Discover(url, custom_auth, common_words, t);
 				runner.search(url);
 			}
 		}
