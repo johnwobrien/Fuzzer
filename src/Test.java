@@ -97,10 +97,11 @@ public class Test {
 				//checks if the response contains important data about the system
 				if(ret.getWebResponse().getContentAsString().contains(a)){
 					if(!flag){
-						System.out.println("                                  At URl: "+ret.getUrl());
+						System.out.println("At URL: "+ret.getUrl());
 						flag=true;
 					}
-					System.out.println("                                  Sensative data leaked: "+a);
+					System.out.println("	Sensative data leaked: "+a);
+					System.out.println("	      To input string: "+v);
 				}
 				
 				
@@ -111,27 +112,27 @@ public class Test {
 					v.contains("\\")||v.contains("*")||v.contains("'")||
 					v.contains("\"")||v.contains("-")||v.contains("%"))){
 				if(!flag){
-					System.out.println("                                  At URl: "+ret.getUrl());
+					System.out.println("At URL: "+ret.getUrl());
 					flag=true;
 				}
-				System.out.println("                                  Lack of Sanitization: "+v);
+				System.out.println("	Lack of Sanitization: "+v);
 			}
 			//Default 500 milliseconds
 			if(ret.getWebResponse().getLoadTime()>slow){
 				if(!flag){
-					System.out.println("                                  At URl: "+ret.getUrl());
+					System.out.println("At URL: "+ret.getUrl());
 					flag=true;
 				}
-				System.out.println("                                  Delayed response of "+ret.getWebResponse().getLoadTime());
+				System.out.println("	Delayed response of "+ret.getWebResponse().getLoadTime());
 			}
 			//200 is everything normal
 			if(ret.getWebResponse().getStatusCode()!=200){
 				if(!flag){
-					System.out.println("                                  At URl: "+ret.getUrl());
+					System.out.println("At URL: "+ret.getUrl());
 					flag=true;
 				}
-				System.out.println("                                  Status Code of "+ret.getWebResponse().getStatusCode());
-				System.out.println("                                                 "+ret.getWebResponse().getStatusMessage());
+				System.out.println("	Status Code of "+ret.getWebResponse().getStatusCode());
+				System.out.println("	               "+ret.getWebResponse().getStatusMessage());
 			}
 		}
 }
