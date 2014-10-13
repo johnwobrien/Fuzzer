@@ -17,6 +17,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 
 
@@ -144,6 +146,21 @@ public class Discover {
 					id = input.getAttribute("name");
 					if("".equals(id)) continue;	// input must have name to be an input
 					System.out.println("       Input discovered: " + id );
+					Class cls = input.getClass();  
+				    System.out.println("The type of the object is: " + cls.getName());  
+					if(input instanceof HtmlTextInput){
+						System.out.println(">>>>>>>>>>>><<<<<<<<<<<<");
+						Scanner sc = new Scanner(new File("sqlInj.txt"));
+						while(sc.hasNextLine()){
+							String scn=sc.nextLine();
+							input.setTextContent(scn);
+							for(HtmlElement elm : inputs){
+								if(elm instanceof HtmlSubmitInput){
+									elm.click();
+								}
+							}
+						}
+					}
 				}
 			}
 			
