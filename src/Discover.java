@@ -85,7 +85,6 @@ public class Discover {
 			}
 			searchSub(visit.get(a),true);
 			visit.remove(a);
-			if(rand) break;
 		}
 		try {
 			System.out.println();
@@ -126,7 +125,6 @@ public class Discover {
 			}
 			searchSub(visit.get(a),true);
 			visit.remove(a);
-			if(rand) break;
 		}
 		if(!test) System.out.println("End of guesses.");
 		
