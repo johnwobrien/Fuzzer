@@ -136,8 +136,10 @@ public class Discover {
 					System.out.println("       Param: " + q);
 					hs.add(q.split("=")[0]);
 				}
-				for(String q: hs){
-					testRunner.paramAttack(key, webClient, q);
+				if(test){
+					for(String q: hs){
+						testRunner.paramAttack(key, webClient, q);
+					}
 				}
 			}
 		}
