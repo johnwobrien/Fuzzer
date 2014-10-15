@@ -82,12 +82,8 @@ public class Discover {
 		avE.add(inaddress);
 		visit.add(inaddress);
 		while(visit.size() > 0) {
-			int a=0;
-			/*if(rand){
-				 a=(int)(visit.size()*Math.random());
-			}*/
-			searchSub(visit.get(a),true);
-			visit.remove(a);
+			searchSub(visit.get(0),true);
+			visit.remove(0);
 		}
 		try {
 			System.out.println();
@@ -119,16 +115,11 @@ public class Discover {
 			}
 			sc.close();
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		while(visit.size() > 0) {
-			int a=0;
-			/*if(rand){
-				 a=(int)(visit.size()*Math.random());
-			}*/
-			searchSub(visit.get(a),true);
-			visit.remove(a);
+			searchSub(visit.get(0),true);
+			visit.remove(0);
 		}
 		if(!test) System.out.println("End of guesses.");
 		
@@ -155,7 +146,6 @@ public class Discover {
 			int a = (int) (Math.random()*avE.size());
 			rand=false;
 			rand2=true;
-			//System.out.println(a+"    "+avE.get(a)+"   "+avE.size());
 			searchSub(avE.get(a), false);
 		}
 		System.out.println("finished");
@@ -176,7 +166,6 @@ public class Discover {
 				if(rand2){
 					form = forms.get((int) (Math.random()*forms.size()));
 				}
-				//if(rand) form = forms.get((int) (Math.random()*forms.size()));
 				String id = form.getId();
 				if("".equals(id)) id = "(no ID for form) " + form.getCanonicalXPath();
 				if(!test) System.out.println("     Form discovered: " + id );
